@@ -16,4 +16,9 @@ export class RolesController {
     getOne(@Param('id') id: string) {
         return this.rolesService.getRoleByValue(id);
     }
+
+    @Get(':id')
+    getById(@Param('id') id: string) {
+        return this.rolesService.getRoleById(id);
+    }
 }
