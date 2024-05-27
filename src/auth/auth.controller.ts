@@ -8,11 +8,11 @@ export class AuthController {
 
   @Post('/login')
   login(@Body() userDto: CreateUserDto) {
-    this.authService.login(userDto)
+    return this.authService.login(userDto)
   }
 
-  @Post('/login')
+  @Post('/registration')
   registration(@Body() userDto: CreateUserDto) {
-    this.authService.registration(userDto);
+    return this.authService.registration(userDto);
   }
 }
