@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles-guard';
 import { AddRoleDto } from './dto/add-role.dto';
+import { BanUserDto } from './dto/ban-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -26,5 +27,12 @@ export class UsersController {
   @Post('/role')
   addRole(@Body() addRoleDto: AddRoleDto) {
     return this.usersService.addRole(addRoleDto);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Post('/role')
+  banUser(@Body() banUserDto: BanUserDto) {
+    return this.usersService.banUser(banUserDto);
   }
 }

@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './users.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/roles/roles.service';
 import { Role } from 'src/roles/roles.model';
 import { AddRoleDto } from './dto/add-role.dto';
+import { BanUserDto } from './dto/ban-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +39,24 @@ export class UsersService {
   }
 
   async addRole(AddRoleDto: AddRoleDto) {
-    
+    const user = await this.userRepository.findByPk(AddRoleDto.userId);
+    const currentRole = await this.roleService.getRoleByValue(AddRoleDto.value);
+    if (currentRole && user) {
+      //  user.update({ roles: [...user.roles, currentRole] });
+      await user.$add('role', currentRole.id);
+      return AddRoleDto;
+    }
+    throw new HttpException('Сосииии шлюха', HttpStatus.NOT_FOUND);
+  }
+
+  async banUser(banUserDto: BanUserDto) {
+    const user = await this.userRepository.findByPk(banUserDto.userId);
+    if (!user)
+      throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
+    user.banned = true;
+    const random = Math.random();
+    user.banReason = random > 0.5 ? banUserDto.banReason : 'По причине пидорас';
+    await user.save();
+    return user;
   }
 }
